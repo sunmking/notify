@@ -1,7 +1,7 @@
 package client
 
 import (
-	"github.com/mohuani/notify/dingtalk/message"
+	"github.com/sunmking/notify/dingtalk/message"
 	"reflect"
 	"testing"
 	"time"

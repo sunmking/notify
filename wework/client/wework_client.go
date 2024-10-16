@@ -3,7 +3,7 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/mohuani/notify/wework/message"
+	"github.com/sunmking/notify/wework/message"
 	"io"
 	"net/http"
 	"strings"

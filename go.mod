@@ -1,3 +1,3 @@
-module github.com/mohuani/notify
+module github.com/sunmking/notify
 
 go 1.19

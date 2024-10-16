@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/mohuani/notify/feishu/message"
+	"github.com/sunmking/notify/feishu/message"
 	"io"
 	"net/http"
 	"strings"

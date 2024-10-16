@@ -1,7 +1,7 @@
 package client
 
 import (
-	"github.com/mohuani/notify/wework/message"
+	"github.com/sunmking/notify/wework/message"
 	"reflect"
 	"testing"
 	"time"

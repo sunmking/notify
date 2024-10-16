@@ -17,7 +17,7 @@
 
 ### 引入本包
 ```shell
-go get -u github.com/mohuani/notify
+go get -u github.com/sunmking/notify
 ```
 
 

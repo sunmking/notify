@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/mohuani/notify/dingtalk/message"
+	"github.com/sunmking/notify/dingtalk/message"
 	"io"
 	"net/http"
 	"strings"

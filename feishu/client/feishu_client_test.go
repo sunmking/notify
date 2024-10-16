@@ -1,7 +1,7 @@
 package client
 
 import (
-	"github.com/mohuani/notify/feishu/message"
+	"github.com/sunmking/notify/feishu/message"
 	"reflect"
 	"testing"
 	"time"
