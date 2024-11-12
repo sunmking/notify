@@ -1,12 +1,14 @@
 package client
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"github.com/sunmking/notify/wework/message"
 	"io"
 	"net/http"
 	"strings"
+	"time"
 )
 
 const (
@@ -14,11 +16,20 @@ const (
 )
 
 type Client struct {
-	token string
+	token              string
+	timeOut            time.Duration
+	insecureSkipVerify bool
 }
 
-func NewWeworkClient(token string) *Client {
-	return &Client{token: token}
+func NewWeworkClient(token string, timeOut time.Duration, insecureSkipVerify bool) *Client {
+	if timeOut == 0 {
+		timeOut = 5 * time.Second
+	}
+	return &Client{
+		token:              token,
+		timeOut:            timeOut,
+		insecureSkipVerify: insecureSkipVerify,
+	}
 }
 
 func (client *Client) Send(msg any) error {
@@ -34,7 +45,14 @@ func (client *Client) Send(msg any) error {
 		return err
 	}
 
-	httpClient := http.Client{}
+	httpClient := http.Client{
+		Timeout: client.timeOut,
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: client.insecureSkipVerify,
+			},
+		},
+	}
 	request.Header.Add("Content-Type", "application/json")
 	response, err := httpClient.Do(request)
 	if err != nil {

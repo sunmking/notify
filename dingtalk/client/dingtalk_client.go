@@ -1,6 +1,7 @@
 package client
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 )
 
 const (
@@ -15,14 +17,21 @@ const (
 )
 
 type Client struct {
-	token   string
-	keyWork string // 自定义关键词
+	token              string
+	keyWork            string // 自定义关键词
+	timeOut            time.Duration
+	insecureSkipVerify bool
 }
 
-func NewDingTalkClient(token string, keyWork string) *Client {
+func NewDingTalkClient(token string, keyWork string, timeOut time.Duration, insecureSkipVerify bool) *Client {
+	if timeOut == 0 {
+		timeOut = 5 * time.Second
+	}
 	return &Client{
-		token:   token,
-		keyWork: keyWork,
+		token:              token,
+		keyWork:            keyWork,
+		timeOut:            timeOut,
+		insecureSkipVerify: insecureSkipVerify,
 	}
 }
 
@@ -36,7 +45,14 @@ func (client *Client) Send(msg any) error {
 
 	payload := strings.NewReader(string(messageContent))
 
-	httpClient := &http.Client{}
+	httpClient := &http.Client{
+		Timeout: client.timeOut,
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: client.insecureSkipVerify,
+			},
+		},
+	}
 	request, err := http.NewRequest(http.MethodPost, url, payload)
 
 	if err != nil {

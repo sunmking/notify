@@ -1,6 +1,7 @@
 package client
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -8,17 +9,25 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type Client struct {
-	token   string
-	keyWork string // 自定义关键词
+	token              string
+	keyWork            string // 自定义关键词
+	timeOut            time.Duration
+	insecureSkipVerify bool
 }
 
-func NewFeiShuClient(token string, keyWork string) *Client {
+func NewFeiShuClient(token string, keyWork string, timeOut time.Duration, insecureSkipVerify bool) *Client {
+	if timeOut == 0 {
+		timeOut = 5 * time.Second
+	}
 	return &Client{
-		token:   token,
-		keyWork: keyWork,
+		token:              token,
+		keyWork:            keyWork,
+		timeOut:            timeOut,
+		insecureSkipVerify: insecureSkipVerify,
 	}
 }
 
@@ -39,7 +48,14 @@ func (client *Client) Send(msg any) error {
 		return err
 	}
 
-	httpClient := http.Client{}
+	httpClient := http.Client{
+		Timeout: client.timeOut,
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: client.insecureSkipVerify,
+			},
+		},
+	}
 	request.Header.Add("Content-Type", "application/json")
 	response, err := httpClient.Do(request)
 	if err != nil {
